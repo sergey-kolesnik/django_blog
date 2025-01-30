@@ -2,6 +2,13 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+
+class PublishedManager(models.Manager):
+    def get_qeryset(self):
+        return (
+            super().get_queryset().filter(status=Post.Status.PUBLISHED)
+        )
+
 class Post(models.Model):
     """
     Модель представляет собой запись блога.
@@ -48,6 +55,8 @@ class Post(models.Model):
         default=Status.DRAFT
         )
 
+    objects = models.Manager()
+    published = PublishedManager()
     class Meta:
         """
         Опции метаданных для модели.
